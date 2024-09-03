@@ -29,6 +29,7 @@ public class Member {
 		System.out.println(m1.toString());
 		System.out.println(m2.toString());
 		System.out.println(m3.toString());
+		
 	}
 	
 }
