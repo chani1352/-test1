@@ -5,7 +5,7 @@ class Item2 { // 제품
     private double price; // 제품 가격
     private int stockQuantity; // 재고량
 
-    // 생성자
+    // 생성자    
     public Item2(String name, double price, int stockQuantity) {
     	this.name = name;
     	this.price = price;
@@ -185,6 +185,10 @@ class Order2 {
     	}
     	return total;
     }
+    
+    public double calculateDiscountedTotal() {
+    	return customer.applyDiscount(calculateTotal());
+    }
 
     // 주문 요약 출력 메소드
     public void printOrderSummary() {
@@ -194,7 +198,7 @@ class Order2 {
     		System.out.println(", quantity = " + quantities[i] + ", orderDate = " + orderDates[i] + ", stockQuantity = " + items[i].getStockQuantity());
     	}
     	System.out.println("Total = " + calculateTotal());
-    	System.out.println("\t =>" + customer.applyDiscount(calculateTotal()) + " [Discount]");
+    	System.out.println("\t =>" + calculateDiscountedTotal() + " [Discount]");
     }
 }
 

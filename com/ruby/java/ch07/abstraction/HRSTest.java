@@ -57,12 +57,8 @@ public class HRSTest {
 	public static void main(String[] args) {
 		Salesman s = new Salesman();
 		Consultant c = new Consultant();
-		//Manager m = new Manager();
 		Director d = new Director();
-		
-		//s.calcSalary();
-		//c.calcSalary();
-		//d.calcSalary();
+
 		
 		s.calcBonus();
 		c.calcBonus();
