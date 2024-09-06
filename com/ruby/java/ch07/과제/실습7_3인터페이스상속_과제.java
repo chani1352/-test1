@@ -14,11 +14,11 @@ class SeasonalDiscount implements Discountable {
 
 	@Override
 	public double getDiscountedPrice(double price) {
-		return price * (1-discountRate);
+		return price * discountRate;
 	}
 }
 
-abstract class Item3 {
+class Item3 {
 	private String name;    // 제품명
 	private double price;   // 제품 가격
 	private int stockQuantity; // 재고량
@@ -32,7 +32,19 @@ abstract class Item3 {
 	public double getPrice() {
 		return price;
 	}
-	public abstract void aaa();
+	
+	public String getName() {
+		return name;
+	}
+	
+    public void reduceStock(int quantity) {
+    	this.stockQuantity -= quantity;
+    }
+
+	
+	public String toString() {
+		return "name = " + name + ", price = " + price;		
+	}
 
 }
 
@@ -44,13 +56,6 @@ class Electronics3 extends Item3 {
 		super(name,price,stockQuantity);
 		this.madeYear = madeYear;
 	}
-
-	@Override
-	public void aaa() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
 
 class Clothing3 extends Item3 {
@@ -60,13 +65,6 @@ class Clothing3 extends Item3 {
 		super(name,price,stockQuantity);
 		this.size = size;
 	}
-
-	@Override
-	public void aaa() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
 
 abstract class Customer3 {
@@ -75,6 +73,10 @@ abstract class Customer3 {
 	
 	public Customer3(String name) {
 		this.name = name;
+	}
+	
+	public String getName() {
+		return name;
 	}
 }
 
@@ -89,7 +91,7 @@ class RegularCustomer3 extends Customer3 {
 
 	@Override
 	double applyDiscount(double totalAmount) {
-		return totalAmount * (1- REGULARDISCOUNT_RATE);
+		return totalAmount * REGULARDISCOUNT_RATE;
 	}
 	
 
@@ -106,7 +108,7 @@ class PremiumCustomer3 extends Customer3 {
 
 	@Override
 	double applyDiscount(double totalAmount) {
-		return totalAmount * (1- PREMIUMDISCOUNT_RATE);
+		return totalAmount * PREMIUMDISCOUNT_RATE;
 	}
 
 }
@@ -118,7 +120,7 @@ class Order3 extends SeasonalDiscount{
 	private Item3[] items;      // 주문 제품들
 	private int[] quantities;  // 주문 제품 수량들
 	private String[] orderDates; // 주문일자들 
-	private static int count = 0;
+	private int count = 0;
 
 
 	public Order3(Customer3 customer, double discountRate)  {
@@ -138,20 +140,32 @@ class Order3 extends SeasonalDiscount{
 
 	public double calculateTotal() {
 		double total = 0;
-		for (int i = 0 ; i < count ; i++) {
-			total += getDiscountedPrice(items[i].getPrice()) * quantities[i];
+		for (int i = 0 ; i < 2 ; i++) {
+			total += quantities[i] * (items[i].getPrice()-getDiscountedPrice(items[i].getPrice())-customer.applyDiscount(items[i].getPrice()));
 		}
-		count = 0;
 		return total;
 	}
 
 	public void printOrderSummary() {
-		System.out.println(calculateTotal());
+		System.out.println("고객 : " + customer.getName());
+		System.out.println("주문 요약 :");
+		for(int i = 0 ; i < count ; i++) {
+			System.out.println(" - " + items[i].getName()  + " * " + quantities[i] + " : W" +items[i].getPrice());
+		}
+		
+
 	}
 	// 할인된 내역을 출력하는 메소드
 	public void printDiscountDetails() {
-		System.out.println(customer.applyDiscount(calculateTotal()));
-
+		System.out.println("할인 내역 : ");
+		for(int i = 0 ; i < count ; i++) {
+			System.out.println(" - " + items[i].getName() + " : 원래가격 W" + items[i].getPrice() + 
+					", 시즌 할인 금액 : W" + getDiscountedPrice(items[i].getPrice()) + 
+					", 고객 할인 금액 : W" + customer.applyDiscount(items[i].getPrice()) + 
+					", 할인 후 가격 : W" + (items[i].getPrice()-getDiscountedPrice(items[i].getPrice())-customer.applyDiscount(items[i].getPrice())));
+		}
+		System.out.println("할인되어 지불해야 하는 금액 = " + calculateTotal());
+		System.out.println();
 	}
 }
 
@@ -166,7 +180,7 @@ class 실습7_3인터페이스상속_과제 {
 		Customer3 premiumCustomer = new PremiumCustomer3("강감찬");
 
 		// 주문 생성 및 계산 (RegularCustomer)
-		Order3 regularOrder = new Order3(regularCustomer, 0.01);
+		Order3 regularOrder = new Order3(regularCustomer, 0.2);
 		regularOrder.addItem(note, 1, "240901");
 		regularOrder.addItem(clothe, 2, "240902");
 
@@ -174,7 +188,7 @@ class 실습7_3인터페이스상속_과제 {
 		regularOrder.printDiscountDetails();  // 할인된 내역 출력
 		
 		// 주문 생성 및 계산 (PremiumCustomer)
-		Order3 premiumOrder = new Order3(premiumCustomer, 0.01);
+		Order3 premiumOrder = new Order3(premiumCustomer, 0.2);
 		premiumOrder.addItem(note, 1, "240901");
 		premiumOrder.addItem(clothe, 2, "240903");
 

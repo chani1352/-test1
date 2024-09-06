@@ -37,6 +37,10 @@ class Item2 { // 제품
     	return price;
     }
     
+    public String getName() {
+    	return name;
+    }
+    
     public int getStockQuantity() {
     	return stockQuantity;
     }
@@ -102,7 +106,7 @@ abstract class Customer2 {
     }
 
 	  @Override public String toString() {
-		  return "name = " + cname + ". city = " + city + ", age = " + age;
+		  return "Order Summary for Customer : " + cname + ", city : " + city + ", age : " + age;
 	  }
 	 
 }
@@ -117,7 +121,7 @@ class RegularCustomer extends Customer2 {
 
 	@Override
 	double applyDiscount(double totalAmount) {
-		return totalAmount * (1-REGULARDISCOUNT_RATE) ;
+		return totalAmount * REGULARDISCOUNT_RATE ;
 	}	
 	
 	public void show() {
@@ -140,7 +144,7 @@ class PremiumCustomer extends Customer2 {
 
 	@Override
 	double applyDiscount(double totalAmount) {
-		return totalAmount * (1-PREMIUMDISCOUNT_RATE) ;
+		return totalAmount * PREMIUMDISCOUNT_RATE ;
 	}
 	
 	public void show() {
@@ -193,12 +197,16 @@ class Order2 {
     // 주문 요약 출력 메소드
     public void printOrderSummary() {
     	customer.show();
+    	System.out.println("-".repeat(70));
+    	System.out.println("Item \t Quantity \t Price");
+    	System.out.println("-".repeat(70));
     	for (int i = 0 ; i < count ; i++) {
-    		items[i].show();
-    		System.out.println(", quantity = " + quantities[i] + ", orderDate = " + orderDates[i] + ", stockQuantity = " + items[i].getStockQuantity());
+    		System.out.println(items[i].getName() + "\t\t" + quantities[i] + "\t" +  items[i].getPrice());
     	}
-    	System.out.println("Total = " + calculateTotal());
-    	System.out.println("\t =>" + calculateDiscountedTotal() + " [Discount]");
+    	System.out.println("-".repeat(70));
+    	System.out.println("Total = " + (calculateTotal() - calculateDiscountedTotal()));
+    	System.out.println("Discounted Total : " + calculateDiscountedTotal());
+    	System.out.println();
     }
 }
 
